@@ -10,9 +10,9 @@
   display: none;
 }
 
-.slider-item {
+/* .slider-item {
   display: none;
-}
+} */
 
 .img-thumbnail {
   cursor: pointer;
@@ -63,4 +63,25 @@ img {
     height: 300px;
     width: 90%;
   }
+}
+
+#create-slider{
+  position: relative;
+}
+#counter {
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: 20px;
+  height: 20px;
+  padding: 0px !important;
+  border-radius: 50%;
+  border: 1px solid red;
+  padding-bottom: 17px !important;
+  line-height: 17px;
+  font-weight: bold;
+}
+
+.errText {
+  width: 100%;
 }

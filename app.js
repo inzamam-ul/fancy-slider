@@ -3,6 +3,7 @@ const gallery = document.querySelector('.gallery');
 const galleryHeader = document.querySelector('.gallery-header');
 const searchBtn = document.getElementById('search-btn');
 const sliderBtn = document.getElementById('create-slider');
+const stopBtn = document.getElementById('stop-slider');
 const sliderContainer = document.getElementById('sliders');
 // selected image 
 let sliders = [];
@@ -31,29 +32,55 @@ const showImages = (images) => {
 const getImages = (query) => {
   fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
     .then(response => response.json())
-    .then(data => showImages(data.hitS))
-    .catch(err => console.log(err))
+    .then(data => {
+      document.getElementById('search-obj').innerHTML = `
+      <span class="searchQuery">Showing result for: ${query}</span>
+      <span class="result-num">(About ${data.hits.length} results)</span>`;
+      
+      if(data.hits.length === 0){
+        gallery.innerHTML = `
+        <h3 class="text-center mt-5 errText">Sorry, "${query}" did't found </h3>
+      `;
+      }else{
+        showImages(data.hits);
+      }
+     
+    })
+    .catch(err => {
+      console.log(err);
+      gallery.innerHTML = `
+        <h3 class="text-center mt-5 errText">Sorry, something went wrong "${query}" did't found </h3>
+      `;
+
+    });
 }
+
 
 let slideIndex = 0;
 const selectItem = (event, img) => {
   let element = event.target;
-  element.classList.add('added');
- 
+
+  //If someone click again on a slected image it will be remove from the sliders array
+  element.classList.toggle('added');
   let item = sliders.indexOf(img);
   if (item === -1) {
     sliders.push(img);
-  } else {
-    alert('Hey, Already added !')
+  }else{
+    sliders.splice(item, 1);
   }
+  document.getElementById('counter').innerText = sliders.length;
+
 }
-var timer
+
+let timer
 const createSlider = () => {
   // check slider image length
   if (sliders.length < 2) {
-    alert('Select at least 2 image.')
+    alert('Select at least 2 image.');
+    stopBtn.classList.toggle('d-none');
     return;
   }
+  
   // crate slider previous next area
   sliderContainer.innerHTML = '';
   const prevNext = document.createElement('div');
@@ -63,11 +90,14 @@ const createSlider = () => {
   <span class="next" onclick="changeItem(1)"><i class="fas fa-chevron-right"></i></span>
   `;
 
-  sliderContainer.appendChild(prevNext)
+  sliderContainer.appendChild(prevNext);
   document.querySelector('.main').style.display = 'block';
   // hide image aria
   imagesArea.style.display = 'none';
-  const duration = document.getElementById('duration').value || 1000;
+  const durationValue = document.getElementById('duration').value || 1000;
+
+  const duration = durationValue < 0 ? (durationValue*-1) : durationValue; //if user set duration negative it will convert it into positive
+
   sliders.forEach(slide => {
     let item = document.createElement('div')
     item.className = "slider-item";
@@ -81,6 +111,7 @@ const createSlider = () => {
     slideIndex++;
     changeSlide(slideIndex);
   }, duration);
+
 }
 
 // change slider index 
@@ -115,8 +146,37 @@ searchBtn.addEventListener('click', function () {
   const search = document.getElementById('search');
   getImages(search.value)
   sliders.length = 0;
+  stopBtn.classList.add('d-none');
+  document.getElementById('counter').innerText = sliders.length;
 })
 
 sliderBtn.addEventListener('click', function () {
   createSlider()
+  stopBtn.classList.toggle('d-none');
 })
+
+//////////////////My code starts from here////////////////////
+
+// Enter key event handler
+const searchBox = document.getElementById('search');
+searchBox.addEventListener('keypress', (e) => {
+  if(e.key === 'Enter'){
+    searchBtn.click();
+  }
+});
+
+//Stop slider button
+stopBtn.addEventListener('click',() => {
+  
+  stopBtn.classList.toggle('d-none');
+  
+  document.querySelector('.main').style.display = 'none';
+  clearInterval(timer);
+  const search = document.getElementById('search');
+  getImages(search.value)
+  sliders.length = 0;
+
+  document.getElementById('counter').innerText = sliders.length;
+
+}); 
+
