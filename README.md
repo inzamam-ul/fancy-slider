@@ -1,4 +1,4 @@
 # Fancy Slider
 ***
-LIVE: https://github.com/inzamam-ul/fancy-slider
+LIVE: https://inzamam-ul.github.io/fancy-slider/index.html
 ***
