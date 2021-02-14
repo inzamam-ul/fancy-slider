@@ -37,6 +37,7 @@ const getImages = (query) => {
       <span class="searchQuery">Showing result for: ${query}</span>
       <span class="result-num">(About ${data.hits.length} results)</span>`;
       
+      //If search result Zero then show this message
       if(data.hits.length === 0){
         gallery.innerHTML = `
         <h3 class="text-center mt-5 errText">Sorry, "${query}" did't found </h3>
@@ -66,9 +67,9 @@ const selectItem = (event, img) => {
   if (item === -1) {
     sliders.push(img);
   }else{
-    sliders.splice(item, 1);
+    sliders.splice(item, 1);//removing unselected images from list
   }
-  document.getElementById('counter').innerText = sliders.length;
+  document.getElementById('counter').innerText = sliders.length;//updating counter
 
 }
 
@@ -146,13 +147,14 @@ searchBtn.addEventListener('click', function () {
   const search = document.getElementById('search');
   getImages(search.value)
   sliders.length = 0;
+
   stopBtn.classList.add('d-none');
-  document.getElementById('counter').innerText = sliders.length;
+  document.getElementById('counter').innerText = sliders.length;//update counter if search again
 })
 
 sliderBtn.addEventListener('click', function () {
   createSlider()
-  stopBtn.classList.toggle('d-none');
+  stopBtn.classList.toggle('d-none');//toggling stop button visibility
 })
 
 //////////////////My code starts from here////////////////////
@@ -168,12 +170,12 @@ searchBox.addEventListener('keypress', (e) => {
 //Stop slider button
 stopBtn.addEventListener('click',() => {
   
-  stopBtn.classList.toggle('d-none');
+  stopBtn.classList.toggle('d-none');//toggling stop button visibility
   
   document.querySelector('.main').style.display = 'none';
   clearInterval(timer);
   const search = document.getElementById('search');
-  getImages(search.value)
+  getImages(search.value)//taking user to previous phase
   sliders.length = 0;
 
   document.getElementById('counter').innerText = sliders.length;
