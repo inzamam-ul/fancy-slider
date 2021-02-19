@@ -24,9 +24,10 @@ const showImages = (images) => {
     let div = document.createElement('div');
     div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
     div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
-    gallery.appendChild(div)
+    gallery.appendChild(div);
+    
   })
-
+  toggleSpinner();
 }
 
 const getImages = (query) => {
@@ -42,6 +43,7 @@ const getImages = (query) => {
         gallery.innerHTML = `
         <h3 class="text-center mt-5 errText">Sorry, "${query}" did't found </h3>
       `;
+      toggleSpinner();
       }else{
         showImages(data.hits);
       }
@@ -143,6 +145,10 @@ const changeSlide = (index) => {
 
 searchBtn.addEventListener('click', function () {
   document.querySelector('.main').style.display = 'none';
+  imagesArea.style.display = 'none';
+
+  toggleSpinner();
+
   clearInterval(timer);
   const search = document.getElementById('search');
   getImages(search.value)
@@ -172,13 +178,22 @@ stopBtn.addEventListener('click',() => {
   
   stopBtn.classList.toggle('d-none');//toggling stop button visibility
   
+  refreshResult();
+
+  document.getElementById('counter').innerText = sliders.length;
+  toggleSpinner();
+
+}); 
+
+const toggleSpinner = () => {
+  const spinner = document.getElementById('spinner');
+  spinner.classList.toggle('d-none');
+}
+
+const refreshResult = () => {
   document.querySelector('.main').style.display = 'none';
   clearInterval(timer);
   const search = document.getElementById('search');
   getImages(search.value)//taking user to previous phase
   sliders.length = 0;
-
-  document.getElementById('counter').innerText = sliders.length;
-
-}); 
-
+}
